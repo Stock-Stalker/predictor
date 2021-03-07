@@ -4,7 +4,7 @@ from flask import Flask, jsonify
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/predictor")
 def home():
     """Return home message"""
     return jsonify({"message": "This is Predictor"}), 200

@@ -2,13 +2,13 @@ FROM python:3
 
 LABEL decription="Production image for StockStalker predictor."
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY requirements.txt .
+COPY predictor/requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY predictor .
 
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=production

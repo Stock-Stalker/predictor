@@ -171,5 +171,6 @@ class djia_fetcher:
             return 0
 
 
-print(reddit_worldnews_fetcher.topnews_today())
-print(djia_fetcher.get_djia_today_label())
+print(f"PRINTING REDDIT_WORLDNEWS_FETCHER RESULTS: \n {reddit_worldnews_fetcher.topnews_today()} \n")
+print("_________________________________________________________________________________")
+print(f"PRINTING DJIA_FETCHER RESULTS: \n {djia_fetcher.get_djia_today_label()} \n")

@@ -10,19 +10,21 @@ import time
 #        Helper Functions        #
 # -------------------------------#
 
+
 def to_epoch(str_time):
-    """This function takes in string time(yyyy-mm-dd) 
-    and convert it to epoch time"""
+    """Take in string time(yyyy-mm-dd) and convert to epoch time."""
     return int(dt.datetime.strptime(str_time, '%Y-%m-%d').timestamp())
 
+
 def get_today_epoch():
-    """ This function returns the epoch time of today """
+    """Return epoch time of today's date."""
     today = dt.datetime.combine(dt.date.today(), dt.datetime.min.time())
     epoch_today_gmt = int(today.timestamp()) - (60*60*8)
     return epoch_today_gmt
 
+
 def get_last_weekday_epoch(epochtime):
-    """ This function returns the most recent previous workday epoch time """
+    """Return the previous workday's date in epoch time."""
     epochtime = dt.datetime.fromtimestamp(epochtime)
     offset = max(1, (epochtime.weekday() + 6) % 7 - 3)
     timedelta = dt.timedelta(offset)
@@ -37,10 +39,13 @@ def get_last_weekday_epoch(epochtime):
 
 
 class reddit_worldnews_fetcher:
+    """Fetch news from external API for prediction model."""
+
     @staticmethod
     def top25news(start_date, end_date):
         """
-        This function will fetch the top25 news of a given date
+        Fetch the top 25 news headlines of a given date.
+
         Input: Time span start_date and end_date
         Out: A list of the givendata and top25news
             [data,new1,new2,...]
@@ -54,7 +59,7 @@ class reddit_worldnews_fetcher:
                "&size=25"
                "&fields=title")
         page = requests.get(url)
-        if page == None:
+        if page is None:
             return None
         content = page.json()['data']
         news_entry = []
@@ -67,10 +72,11 @@ class reddit_worldnews_fetcher:
     @staticmethod
     def historical_data(period1, period2=str(dt.date.today())):
         """
-        This function will fetch the top25 news of a given time span
-        Input: time span. Format is yyyy-mm-dd. 
-               If leave period2 empty, period2 will be the current date
-        Output: Will create news.csv and story all the entries there.
+        Fetch the top 25 news headlines in a given time span.
+
+        Input: time span. Format is yyyy-mm-dd.
+               If leave period2 empty, period2 will be current date
+        Output: Will create news.csv and store all entries there.
         """
         current_time = to_epoch(period1)
         period2 = to_epoch(period2)
@@ -80,15 +86,18 @@ class reddit_worldnews_fetcher:
                 next_day = current_time + (60*60*24)
                 top25news = reddit_worldnews_fetcher.top25news(
                     current_time, next_day)
-                if top25news != None:
+                if top25news is not None:
                     csvwriter.writerow(top25news)
                 time.sleep(1)  # To avoid error 429: Too Many Requests
                 current_time = next_day
+
     @staticmethod
     def topnews_today():
         """
-        This function returns the top news of today
-        output:  a string of 25 top news seperated by spaces
+        Return the top news of today.
+
+        Input: None
+        Output: String of 25 top news headlines separated by spaces
                 'news1 news2 news3 ...'
         """
         today_epoch = get_today_epoch()
@@ -101,13 +110,17 @@ class reddit_worldnews_fetcher:
 #          djia_fetcher          #
 # -------------------------------#
 class djia_fetcher:
+    """Fetch DJIA historic data."""
+
     @staticmethod
     def get_djia_data(period1, period2):
         """
-        This function takes will fetch Dow Jones Industrial Average historical data
+        Fetch Dow Jones Industrial Average historical data.
+
         Input: 2 epoch time data, from period1 to period2
         Output: A tuple of headings and the body of the table
-        and will scrape DowJohn historical data from yahoo news """
+        and will scrape Dow Jones historical data from yahoo news.
+        """
 
         url = ("https://finance.yahoo.com/quote/%5EDJI/history"
             f"?period1={period1}"
@@ -140,7 +153,13 @@ class djia_fetcher:
 
     @staticmethod
     def get_djia_today_label():
-        """ This function returns a label telling if the DJIA goes up or down """
+        """
+        Return a label telling if the DJIA goes up or down.
+
+        Output: Binary classification label:
+                1 = "goes up"
+                0 = "went down or stayed the same"
+        """
         today_epoch = get_today_epoch()
         last_workday = get_last_weekday_epoch(today_epoch)
         headings,data = djia_fetcher.get_djia_data(last_workday,today_epoch)

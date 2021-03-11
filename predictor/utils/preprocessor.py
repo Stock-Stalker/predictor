@@ -19,7 +19,7 @@ def to_epoch(str_time):
 def get_today_epoch():
     """Return epoch time of today's date."""
     today = dt.datetime.combine(dt.date.today(), dt.datetime.min.time())
-    epoch_today_gmt = int(today.timestamp()) - (60*60*8)
+    epoch_today_gmt = int(today.timestamp())
     return epoch_today_gmt
 
 

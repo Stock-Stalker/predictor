@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import csv
 import datetime as dt
 import time
+from fuzzywuzzy import process
 
 dotenv.load_dotenv()
 # -------------------------------#
@@ -34,43 +35,62 @@ def get_last_weekday_epoch(epochtime):
     return most_recent
 
 
+def get_ticker_from_name(abbr_or_name):
+    """
+    Return market ticker abbreviation for given company name.
+
+    Input: company name OR abbreviation:string
+    Output: dict including symbol, name, and date accessed
+    """
+    r = requests.get("https://api.iextrading.com/1.0/ref-data/symbols")
+    stockList = r.json()
+    # Then, if we want the symbol, we can access "symbol" key.
+    # If we want name, we extract "name" key.
+    return process.extractOne(abbr_or_name, stockList)[0]
+
+
 # -------------------------------#
 #    reddit_worldnews_fetcher    #
 # -------------------------------#
+
+# Currently, I'm pulling much more than 25 headlines.
+# This is so I can get more data for the model.
+# Do we want to leave like this, or change back later?
+# If we want to keep like this, we'll want to rename the function
 
 
 class reddit_worldnews_fetcher:
     """Fetch news from external API for prediction model."""
 
     @staticmethod
-    def top25news(start_date, end_date):
+    def top25news(start_date, end_date, company_name):
         """
         Fetch the top 25 news headlines of a given date.
 
         Input: Time span start_date and end_date
-        Out: A list of the givendata and top25news
-            [data,new1,new2,...]
+                Type:String, YYYY-mm-dd format
+                Will convert to epoch with helper
+        Output: A list of the givendata and top25news
+                [data,new1,new2,...]
         """
         url = (
             "https://api.pushshift.io/reddit/search/submission"
             "?subreddit=worldnews"
             "&sort_type=score"
-            f"&after={start_date}"
-            f"&before={end_date}"
+            f"&after={to_epoch(start_date)}"
+            f"&before={to_epoch(end_date)}"
             "&sort=desc"
-            "&size=25"
-            "&fields=title"
+            "&size=300"
+            "&fields=title,created_utc"
+            f"&title={company_name}"
         )
         page = requests.get(url)
         if page is None:
             return None
         content = page.json()["data"]
         news_entry = []
-        news_entry.append(
-            dt.datetime.fromtimestamp(start_date).strftime("%b %d,%Y")
-        )
         for news in content:
-            news_entry.append(news["title"])
+            news_entry.append((news["title"], news["created_utc"]))
         return news_entry
 
     @staticmethod
@@ -120,7 +140,7 @@ class djia_fetcher:
     """Fetch DJIA historic data."""
 
     @staticmethod
-    def get_djia_data(period1, period2):
+    def get_djia_data(period1, period2, ticker):
         """
         Fetch Dow Jones Industrial Average historical data.
 
@@ -130,7 +150,7 @@ class djia_fetcher:
         """
 
         url = (
-            "https://finance.yahoo.com/quote/%5EDJI/history"
+            f"https://finance.yahoo.com/quote/{ticker}/history"
             f"?period1={period1}"
             f"&period2={period2}"
             "&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
@@ -178,6 +198,34 @@ class djia_fetcher:
             return 1
         else:
             return 0
+
+    @staticmethod
+    def get_djia_label(news_date, company_name):
+        """
+        Get sentiment label for the date of a given piece of news.
+
+        For each piece of news this will be called.
+        Input: news_date:Integer, epoch time
+        Output: Sentiment label:
+                0 -> stock went down
+                1 -> stock went up
+                2 -> no change (neutral)
+        """
+        ticker = get_ticker_from_name(company_name).get("symbol")
+
+        last_workday = get_last_weekday_epoch(news_date)
+        headings, data = djia_fetcher.get_djia_data(
+            last_workday, news_date, ticker
+        )
+        print(f"Headings line 201: {headings}, data: {data}")
+        last_workday_closed_price = data[1][4]
+        news_date_closed_price = data[0][4]
+        if news_date_closed_price > last_workday_closed_price:
+            return 1
+        elif news_date_closed_price < last_workday_closed_price:
+            return 0
+        else:
+            return 2
 
 
 # -------------------------------#
@@ -230,17 +278,28 @@ def news_sentiment_analysis(keyword):
 
 
 # print(
-#     f"PRINTING REDDIT_WORLDNEWS_FETCHER RESULTS: \n {reddit_worldnews_fetcher.topnews_today()} \n"
+#     f"PRINTING REDDIT_WORLDNEWS_FETCHER RESULTS: \n {reddit_worldnews_fetcher.top25news('2020-01-01', '2021-03-01', 'Apple')} \n"
 # )
 # print(
 #     "_________________________________________________________________________________"
 # )
-# print(
-#     f"PRINTING DJIA_FETCHER RESULTS: \n {djia_fetcher.get_djia_today_label()} \n"
-# )
-# print(
-#     "_________________________________________________________________________________"
-# )
+test_result = reddit_worldnews_fetcher.top25news(
+    "2021-01-01", "2021-01-02", "Apple"
+)[
+    0
+]  # access just the first returned item
+news_date = test_result[1]  # access the date from tuple
+
+print(
+    f"GET ONE DATA FROM REDDIT_WORLDNEWS_FETCHER: {test_result}, {news_date}"
+)
+
+print(
+    f"PRINTING DJIA_FETCHER RESULTS: \n {djia_fetcher.get_djia_label(news_date, 'Apple')} \n"
+)
+print(
+    "_________________________________________________________________________________"
+)
 # print(
 #     f"PRINTING Sentiment_Analysis RESULTS: \n {news_sentiment_analysis('apple')} \n"
 # )

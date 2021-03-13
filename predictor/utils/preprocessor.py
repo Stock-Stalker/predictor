@@ -6,6 +6,7 @@ import csv
 import datetime as dt
 import time
 
+dotenv.load_dotenv()
 # -------------------------------#
 #        Helper Functions        #
 # -------------------------------#
@@ -13,7 +14,7 @@ import time
 
 def to_epoch(str_time):
     """Take in string time(yyyy-mm-dd) and convert to epoch time."""
-    return int(dt.datetime.strptime(str_time, '%Y-%m-%d').timestamp())
+    return int(dt.datetime.strptime(str_time, "%Y-%m-%d").timestamp())
 
 
 def get_today_epoch():
@@ -29,7 +30,7 @@ def get_last_weekday_epoch(epochtime):
     offset = max(1, (epochtime.weekday() + 6) % 7 - 3)
     timedelta = dt.timedelta(offset)
     most_recent = epochtime - timedelta
-    most_recent = int(most_recent.timestamp()) - (60*60*24)
+    most_recent = int(most_recent.timestamp()) - (60 * 60 * 24)
     return most_recent
 
 
@@ -50,23 +51,26 @@ class reddit_worldnews_fetcher:
         Out: A list of the givendata and top25news
             [data,new1,new2,...]
         """
-        url = ("https://api.pushshift.io/reddit/search/submission"
-               "?subreddit=worldnews"
-               "&sort_type=score"
-               f"&after={start_date}"
-               f"&before={end_date}"
-               "&sort=desc"
-               "&size=25"
-               "&fields=title")
+        url = (
+            "https://api.pushshift.io/reddit/search/submission"
+            "?subreddit=worldnews"
+            "&sort_type=score"
+            f"&after={start_date}"
+            f"&before={end_date}"
+            "&sort=desc"
+            "&size=25"
+            "&fields=title"
+        )
         page = requests.get(url)
         if page is None:
             return None
-        content = page.json()['data']
+        content = page.json()["data"]
         news_entry = []
-        news_entry.append(dt.datetime.fromtimestamp(
-            start_date).strftime("%b %d,%Y"))
+        news_entry.append(
+            dt.datetime.fromtimestamp(start_date).strftime("%b %d,%Y")
+        )
         for news in content:
-            news_entry.append(news['title'])
+            news_entry.append(news["title"])
         return news_entry
 
     @staticmethod
@@ -80,12 +84,13 @@ class reddit_worldnews_fetcher:
         """
         current_time = to_epoch(period1)
         period2 = to_epoch(period2)
-        with open('news.csv', mode='w') as csv_file:
+        with open("news.csv", mode="w") as csv_file:
             csvwriter = csv.writer(csv_file)
             while current_time < period2:
-                next_day = current_time + (60*60*24)
+                next_day = current_time + (60 * 60 * 24)
                 top25news = reddit_worldnews_fetcher.top25news(
-                    current_time, next_day)
+                    current_time, next_day
+                )
                 if top25news is not None:
                     csvwriter.writerow(top25news)
                 time.sleep(1)  # To avoid error 429: Too Many Requests
@@ -101,8 +106,10 @@ class reddit_worldnews_fetcher:
                 'news1 news2 news3 ...'
         """
         today_epoch = get_today_epoch()
-        nextday_epoch = today_epoch + (60*60*24)
-        top_news = reddit_worldnews_fetcher.top25news(today_epoch, nextday_epoch)
+        nextday_epoch = today_epoch + (60 * 60 * 24)
+        top_news = reddit_worldnews_fetcher.top25news(
+            today_epoch, nextday_epoch
+        )
         return " ".join(top_news[1:])
 
 
@@ -122,30 +129,32 @@ class djia_fetcher:
         and will scrape Dow Jones historical data from yahoo news.
         """
 
-        url = ("https://finance.yahoo.com/quote/%5EDJI/history"
+        url = (
+            "https://finance.yahoo.com/quote/%5EDJI/history"
             f"?period1={period1}"
             f"&period2={period2}"
-            "&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true")
+            "&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
+        )
         page = requests.get(url)
         # Parsing & Organizing Data
         headings = []  # A container to hold headings in the table
-        data = []     # A container to hold the body in the table
+        data = []  # A container to hold the body in the table
         soup = BeautifulSoup(page.content, "lxml")
         table = soup.table
         # Read in table headings
-        table_head = table.find('thead')
-        table_headrows = table_head.find_all('th')
+        table_head = table.find("thead")
+        table_headrows = table_head.find_all("th")
         for row in table_headrows:
             col = row.text.strip()
-            headings.append(col.replace('*', ''))
+            headings.append(col.replace("*", ""))
         # Read in body content
-        table_body = table.find('tbody')
-        table_bodyrows = table_body.find_all('tr')
+        table_body = table.find("tbody")
+        table_bodyrows = table_body.find_all("tr")
 
         for row in table_bodyrows:
-            cols = row.select('td span')
+            cols = row.select("td span")
             cols = [col.get_text() for col in cols]
-            cols = [col.replace(',', '') for col in cols]
+            cols = [col.replace(",", "") for col in cols]
             for i in range(1, len(cols)):
                 cols[i] = float(cols[i])
             data.append(cols)
@@ -162,7 +171,7 @@ class djia_fetcher:
         """
         today_epoch = get_today_epoch()
         last_workday = get_last_weekday_epoch(today_epoch)
-        headings,data = djia_fetcher.get_djia_data(last_workday,today_epoch)
+        headings, data = djia_fetcher.get_djia_data(last_workday, today_epoch)
         last_workday_closed_price = data[1][4]
         today_closed_price = data[0][4]
         if today_closed_price > last_workday_closed_price:
@@ -171,6 +180,57 @@ class djia_fetcher:
             return 0
 
 
-print(f"PRINTING REDDIT_WORLDNEWS_FETCHER RESULTS: \n {reddit_worldnews_fetcher.topnews_today()} \n")
-print("_________________________________________________________________________________")
-print(f"PRINTING DJIA_FETCHER RESULTS: \n {djia_fetcher.get_djia_today_label()} \n")
+# -------------------------------#
+#    news_sentiment_analysis     #
+# -------------------------------#
+def news_sentiment_analysis(keyword):
+    """
+    Returns top25 news and Sentiment Analysis label
+    Input: keyword for the stock
+    Output: A list of list containing
+            ['news title', 'description', 'Sentiment Analysis label']
+            Sentiment Analysis label:
+                0 = "negative"
+                1 = "positive"
+                2 = "neutral"
+    """
+    # Make API call to fetch top news headline
+    url = f"https://newsapi.org/v2/top-headlines?q={keyword}&pageSize=25&apiKey={os.getenv('API_KEY')}"
+    content = requests.get(url).json()
+    articles = content["articles"]
+    news = []
+    for (
+        article
+    ) in articles:  # parsing data and store the news title and description
+        news.append([article["title"], article["description"]])
+    # Make API call to get sentiment label
+    for entry in news:
+        body = {"text": " ".join(entry)}
+        x = requests.post(
+            "https://sentim-api.herokuapp.com/api/v1/",
+            json=body,
+            headers={"Content-Type": "application/json"},
+        )
+        result = x.json()["result"][
+            "type"
+        ]  # parsing data and store the result
+        label_dict = {"positive": 1, "negative": 0, "neutral": 2}
+        entry.append(label_dict[result])
+    return news
+
+
+print(
+    f"PRINTING REDDIT_WORLDNEWS_FETCHER RESULTS: \n {reddit_worldnews_fetcher.topnews_today()} \n"
+)
+print(
+    "_________________________________________________________________________________"
+)
+print(
+    f"PRINTING DJIA_FETCHER RESULTS: \n {djia_fetcher.get_djia_today_label()} \n"
+)
+print(
+    "_________________________________________________________________________________"
+)
+print(
+    f"PRINTING Sentiment_Analysis RESULTS: \n {news_sentiment_analysis('apple')} \n"
+)

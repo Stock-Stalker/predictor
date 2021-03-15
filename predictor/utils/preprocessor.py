@@ -1,3 +1,5 @@
+"""Preprocessing for daily news scraping, obtaining data for model training."""
+
 import os
 import dotenv
 import requests

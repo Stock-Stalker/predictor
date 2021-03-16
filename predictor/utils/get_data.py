@@ -1,6 +1,11 @@
 """Obtain data for model training."""
-from preprocessor import news_sentiment_analysis
+from preprocessor import reddit_worldnews_fetcher, djia_fetcher
+import pandas as pd
+
+# import concurrent.futures
 import csv
+import time
+
 
 djia_companies = [
     "3M",
@@ -34,8 +39,33 @@ djia_companies = [
     "Walmart",
 ]
 
-# TODO: modify get_data() to work with modified
-# reddit_worldnews_fetcher & get_djia_today_label
+# Read in nasdaq symbols to loop through and get data for these companies
+nasdaq = pd.read_csv("./nasdaqlisted.csv", header=0, usecols=[1])
+
+# When converting the series to a list,
+# Pandas gives us a "created on" thing at the last element we don't want
+# nasdaq.apply(
+#     (lambda x: str(x).partition("-")[0] for x in nasdaq["Security Name"])
+# )
+nasdaq_names = []
+
+for name in list(nasdaq["Security Name"]):
+    name = name.partition(" - ")[0]
+    name = (
+        name.replace("[^a-zA-Z]", " ")
+        .replace("Inc.", "")
+        .replace("Inc", "")
+        .replace("Corp", "")
+        .replace("Corporation", "")
+        .replace("Ltd.", "")
+        .replace("Limited", "")
+        .strip()
+    )
+    nasdaq_names.append(name)
+
+# print(f"nasdaq_syms: {nasdaq_names}")
+
+t1 = time.perf_counter()
 
 
 def get_data():
@@ -48,29 +78,39 @@ def get_data():
         Headlines: Titles, descriptions, strings
         Sentiment: 0, 1, or 2
     """
-    fieldnames = ["Label", "Ticker", "Headline", "Description"]
-    with open("djia_news.csv", mode="w") as data:
+    fieldnames = ["Label", "Ticker", "Headline"]
+    with open("nasdaq.csv", mode="a") as data:
         data_writer = csv.DictWriter(data, fieldnames=fieldnames)
-        data_writer.writeheader()
-        for company_name in djia_companies:
-            news = news_sentiment_analysis(company_name)
-            for n in news:
-                if len(n) < 3:
-                    continue
-                # Clean up data a bit
-                headline = n[0].replace(",", "")
-                description = n[1].replace(",", "")
-                data_writer.writerow(
-                    {
-                        "Label": n[2],
-                        "Ticker": company_name,
-                        "Headline": headline,
-                        "Description": description,
-                    }
-                )
+        # data_writer.writeheader()
+        for company_name in nasdaq_names:
+            news = reddit_worldnews_fetcher.top25news(
+                "2000-01-01", "2021-03-13", company_name
+            )
+            try:
+                for n in news:
+                    # Clean up data a bit
+                    headline = n[0].replace(",", "")
+                    date = n[1]
+                    label = djia_fetcher.get_djia_label(date, company_name)
+                    data_writer.writerow(
+                        {
+                            "Label": label[0],
+                            "Ticker": label[1],
+                            "Headline": headline,
+                        }
+                    )
+            except TypeError:
+                print("None")
 
     return
 
 
+print("CALLING GET DATA")
 get_data()
-print("CALLED GET_DATA")
+print("GET DATA FINISHED")
+# if __name__ == "__main__":
+#     with concurrent.futures.ProcessPoolExecutor() as executor:
+#         executor.map(get_data, nasdaq_names)
+
+t2 = time.perf_counter()
+print(f"Finished in {t2 - t1} seconds")

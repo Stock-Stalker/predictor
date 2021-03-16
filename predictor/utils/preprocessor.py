@@ -89,11 +89,14 @@ class reddit_worldnews_fetcher:
         page = requests.get(url)
         if page is None:
             return None
-        content = page.json()["data"]
-        news_entry = []
-        for news in content:
-            news_entry.append((news["title"], news["created_utc"]))
-        return news_entry
+        try:
+            content = page.json().get("data")
+            news_entry = []
+            for news in content:
+                news_entry.append((news["title"], news["created_utc"]))
+            return news_entry
+        except:
+            return None
 
     @staticmethod
     def historical_data(period1, period2=str(dt.date.today())):
@@ -164,23 +167,26 @@ class djia_fetcher:
         soup = BeautifulSoup(page.content, "lxml")
         table = soup.table
         # Read in table headings
-        table_head = table.find("thead")
-        table_headrows = table_head.find_all("th")
-        for row in table_headrows:
-            col = row.text.strip()
-            headings.append(col.replace("*", ""))
-        # Read in body content
-        table_body = table.find("tbody")
-        table_bodyrows = table_body.find_all("tr")
+        try:
+            table_head = table.find("thead")
+            table_headrows = table_head.find_all("th")
+            for row in table_headrows:
+                col = row.text.strip()
+                headings.append(col.replace("*", ""))
+            # Read in body content
+            table_body = table.find("tbody")
+            table_bodyrows = table_body.find_all("tr")
 
-        for row in table_bodyrows:
-            cols = row.select("td span")
-            cols = [col.get_text() for col in cols]
-            cols = [col.replace(",", "") for col in cols]
-            for i in range(1, len(cols)):
-                cols[i] = float(cols[i])
-            data.append(cols)
-        return (headings, data)
+            for row in table_bodyrows:
+                cols = row.select("td span")
+                cols = [col.get_text() for col in cols]
+                cols = [col.replace(",", "") for col in cols]
+                for i in range(1, len(cols)):
+                    cols[i] = float(cols[i])
+                data.append(cols)
+            return (headings, data)
+        except AttributeError:
+            print("AttributeError occurred. In Except block.")
 
     @staticmethod
     def get_djia_today_label():
@@ -208,26 +214,29 @@ class djia_fetcher:
 
         For each piece of news this will be called.
         Input: news_date:Integer, epoch time
-        Output: Sentiment label:
+        Output: Tuple containing Sentiment label:
                 0 -> stock went down
                 1 -> stock went up
                 2 -> no change (neutral)
+                And company ticker
         """
         ticker = get_ticker_from_name(company_name).get("symbol")
 
-        last_workday = get_last_weekday_epoch(news_date)
-        headings, data = djia_fetcher.get_djia_data(
-            last_workday, news_date, ticker
-        )
-        print(f"Headings line 201: {headings}, data: {data}")
-        last_workday_closed_price = data[1][4]
-        news_date_closed_price = data[0][4]
-        if news_date_closed_price > last_workday_closed_price:
-            return 1
-        elif news_date_closed_price < last_workday_closed_price:
-            return 0
-        else:
-            return 2
+        try:
+            last_workday = get_last_weekday_epoch(news_date)
+            headings, data = djia_fetcher.get_djia_data(
+                last_workday, news_date, ticker
+            )
+            last_workday_closed_price = data[1][4]
+            news_date_closed_price = data[0][4]
+            if news_date_closed_price > last_workday_closed_price:
+                return (1, ticker)
+            elif news_date_closed_price < last_workday_closed_price:
+                return (0, ticker)
+            else:
+                return (2, ticker)
+        except (IndexError, ValueError):
+            return (0, ticker)
 
 
 # -------------------------------#
@@ -285,23 +294,23 @@ def news_sentiment_analysis(keyword):
 # print(
 #     "_________________________________________________________________________________"
 # )
-test_result = reddit_worldnews_fetcher.top25news(
-    "2021-01-01", "2021-01-02", "Apple"
-)[
-    0
-]  # access just the first returned item
-news_date = test_result[1]  # access the date from tuple
-
-print(
-    f"GET ONE DATA FROM REDDIT_WORLDNEWS_FETCHER: {test_result}, {news_date}"
-)
-
-print(
-    f"PRINTING DJIA_FETCHER RESULTS: \n {djia_fetcher.get_djia_label(news_date, 'Apple')} \n"
-)
-print(
-    "_________________________________________________________________________________"
-)
+# test_result = reddit_worldnews_fetcher.top25news(
+#     "2021-01-01", "2021-01-02", "Apple"
+# )[
+#     0
+# ]  # access just the first returned item
+# news_date = test_result[1]  # access the date from tuple
+#
+# print(
+#     f"GET ONE DATA FROM REDDIT_WORLDNEWS_FETCHER: {test_result}, {news_date}"
+# )
+#
+# print(
+#     f"PRINTING DJIA_FETCHER RESULTS: \n {djia_fetcher.get_djia_label(news_date, 'Apple')} \n"
+# )
+# print(
+#     "_________________________________________________________________________________"
+# )
 # print(
 #     f"PRINTING Sentiment_Analysis RESULTS: \n {news_sentiment_analysis('apple')} \n"
 # )

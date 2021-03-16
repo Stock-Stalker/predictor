@@ -79,6 +79,7 @@ def get_data():
         Sentiment: 0, 1, or 2
     """
     fieldnames = ["Label", "Ticker", "Headline"]
+    counter = 0
     with open("nasdaq.csv", mode="a") as data:
         data_writer = csv.DictWriter(data, fieldnames=fieldnames)
         # data_writer.writeheader()
@@ -100,7 +101,8 @@ def get_data():
                         }
                     )
             except TypeError:
-                print("None")
+                counter += 1
+                print("DataError: ", counter)
 
     return
 

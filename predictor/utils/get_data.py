@@ -49,7 +49,7 @@ nasdaq = pd.read_csv("./nasdaqlisted.csv", header=0, usecols=[1])
 # )
 nasdaq_names = []
 
-for name in list(nasdaq["Security Name"]):
+for name in list(nasdaq["companyName"]):
     name = name.partition(" - ")[0]
     name = (
         name.replace("[^a-zA-Z]", " ")
@@ -83,7 +83,7 @@ def get_data():
     with open("nasdaq.csv", mode="a") as data:
         data_writer = csv.DictWriter(data, fieldnames=fieldnames)
         # data_writer.writeheader()
-        for company_name in nasdaq_names:
+        for company_name in nasdaq_names[1530:]:
             news = reddit_worldnews_fetcher.top25news(
                 "2000-01-01", "2021-03-13", company_name
             )

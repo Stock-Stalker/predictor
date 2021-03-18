@@ -1,5 +1,6 @@
 """Predictor."""
 from flask import Flask, jsonify
+from utils.predict import predictor
 
 app = Flask(__name__)
 
@@ -7,7 +8,10 @@ app = Flask(__name__)
 @app.route("/predictor")
 def home():
     """Return home message"""
-    return jsonify({"message": "This is Predictor"}), 200
+    prediction = predictor(
+        ["aapl apple to give away free iphones for a year"]
+    )
+    return jsonify({"prediction": prediction}), 200
 
 
 if __name__ == "__main__":

@@ -6,12 +6,11 @@ from utils.preprocessor import reddit_worldnews_fetcher
 app = Flask(__name__)
 
 
-@app.route("/predictor")
-def home():
+@app.route("/predictor/<company_name>")
+def home(company_name):
     """Return home message"""
-    prediction = predictor(
-        ["aapl apple to give away free iphones for a year"]
-    )
+    headlines = reddit_worldnews_fetcher.topnews_today(company_name)
+    prediction = predictor()
     return jsonify({"prediction": prediction}), 200
 
 

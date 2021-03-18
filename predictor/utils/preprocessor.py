@@ -82,30 +82,22 @@ class reddit_worldnews_fetcher:
             f"&before={end_date}"
             "&sort=desc"
             "&size=25"
-            "&fields=title,created_utc"
+            "&fields=title"
             f"&title={company_name}"
         )
-        print("CALLING TOP25NEWS!")
-        print(f"COMPANY_NAME: {company_name}")
         page = requests.get(url)
-        print(f"PAGE: {page}")
         if page is None:
             return None
         try:
             content = page.json().get("data")
-            print(f"IN TRY BLOCK. CONTENT: {content}")
-            sym = get_ticker_from_name(company_name)
-            print(f"IN TRY BLOCK: GETTING SYMBOL: {sym}")
+            # sym = get_ticker_from_name(company_name).symbol
+            # print(f"IN TRY BLOCK: GETTING SYMBOL: {sym}")
             news_entry = []
             for news in content:
-                news_entry.append((sym + " " + news["title"]))
-            print(f"NEWS ENTRY: {news_entry}")
+                news_entry.append(news["title"])
             return news_entry
         except:
-            print(
-                "in except block redditworldnewsfetcher - going to return None"
-            )
-            return None
+            print("in except block redditworldnewsfetcher")
 
     @staticmethod
     def historical_data(period1, period2=str(dt.date.today())):
@@ -144,9 +136,7 @@ class reddit_worldnews_fetcher:
         top_news = reddit_worldnews_fetcher.top25news(
             today_epoch, nextday_epoch, company_name
         )
-        print("IN TOPNEWS_TODAY LINE 139")
-        print(f"TOP NEWS: {top_news}")
-        return " ".join(top_news[1:])
+        return top_news
 
 
 # -------------------------------#
@@ -254,7 +244,7 @@ class djia_fetcher:
 #    news_sentiment_analysis     #
 # -------------------------------#
 
-# Use for testing model "in production" prior to fully finishing app
+# Use for testing model "in production" prior to fully finishing app?
 # No reason we should waste this :)
 
 
@@ -297,31 +287,3 @@ def news_sentiment_analysis(keyword):
         except TypeError:
             return f"Missing one entry. Failed on {keyword}"
     return news
-
-
-# print(
-#     f"PRINTING REDDIT_WORLDNEWS_FETCHER RESULTS: \n {reddit_worldnews_fetcher.top25news('2020-01-01', '2021-03-01', 'Apple')} \n"
-# )
-# print(
-#     "_________________________________________________________________________________"
-# )
-# test_result = reddit_worldnews_fetcher.top25news(
-#     "2021-01-01", "2021-01-02", "Apple"
-# )[
-#     0
-# ]  # access just the first returned item
-# news_date = test_result[1]  # access the date from tuple
-#
-# print(
-#     f"GET ONE DATA FROM REDDIT_WORLDNEWS_FETCHER: {test_result}, {news_date}"
-# )
-#
-# print(
-#     f"PRINTING DJIA_FETCHER RESULTS: \n {djia_fetcher.get_djia_label(news_date, 'Apple')} \n"
-# )
-# print(
-#     "_________________________________________________________________________________"
-# )
-# print(
-#     f"PRINTING Sentiment_Analysis RESULTS: \n {news_sentiment_analysis('apple')} \n"
-# )

@@ -70,8 +70,7 @@ class reddit_worldnews_fetcher:
         Fetch the top 25 news headlines of a given date.
 
         Input: Time span start_date and end_date
-                Type:String, YYYY-mm-dd format
-                Will convert to epoch with helper
+                Type:epochtime
         Output: A list of the givendata and top25news
                 [data,new1,new2,...]
         """
@@ -79,23 +78,33 @@ class reddit_worldnews_fetcher:
             "https://api.pushshift.io/reddit/search/submission"
             "?subreddit=worldnews"
             "&sort_type=score"
-            f"&after={to_epoch(start_date)}"
-            f"&before={to_epoch(end_date)}"
+            f"&after={start_date}"
+            f"&before={end_date}"
             "&sort=desc"
-            "&size=300"
+            "&size=25"
             "&fields=title,created_utc"
             f"&title={company_name}"
         )
+        print("CALLING TOP25NEWS!")
+        print(f"COMPANY_NAME: {company_name}")
         page = requests.get(url)
+        print(f"PAGE: {page}")
         if page is None:
             return None
         try:
             content = page.json().get("data")
+            print(f"IN TRY BLOCK. CONTENT: {content}")
+            sym = get_ticker_from_name(company_name)
+            print(f"IN TRY BLOCK: GETTING SYMBOL: {sym}")
             news_entry = []
             for news in content:
-                news_entry.append((news["title"], news["created_utc"]))
+                news_entry.append((sym + " " + news["title"]))
+            print(f"NEWS ENTRY: {news_entry}")
             return news_entry
         except:
+            print(
+                "in except block redditworldnewsfetcher - going to return None"
+            )
             return None
 
     @staticmethod
@@ -135,6 +144,8 @@ class reddit_worldnews_fetcher:
         top_news = reddit_worldnews_fetcher.top25news(
             today_epoch, nextday_epoch, company_name
         )
+        print("IN TOPNEWS_TODAY LINE 139")
+        print(f"TOP NEWS: {top_news}")
         return " ".join(top_news[1:])
 
 

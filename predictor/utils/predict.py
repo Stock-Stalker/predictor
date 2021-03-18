@@ -8,7 +8,7 @@ import pickle
 max_features = 2000
 
 
-def predictor(headlines):
+def predictor(symbol, headline):
     """
     Predict whether a stock will increase or decrease.
 
@@ -23,12 +23,26 @@ def predictor(headlines):
         2 -> Stock will hold
     """
     model = keras.models.load_model("saved_model/my_model")
-    # Tokenize our text to sequences the model understands
-    with open("tokenizer.pickle", "rb") as handle:
-        tokenizer = pickle.load(handle)
-        seq = tokenizer.texts_to_sequences(text)
+
+    # Preprocess our symbol and headlines so the model can accept the tokenization properly
+    try:
+        headline = [f"{symbol} {headline}"]
+
+        print(f"Headlines after preprocessing: {headlines}")
+        # Tokenize our text to sequences the model understands
+        with open("tokenizer.pickle", "rb") as handle:
+            tokenizer = pickle.load(handle)
+        seq = tokenizer.texts_to_sequences(headlines)
         padded = pad_sequences(seq)
         prediction = model.predict(padded)
-    labels = ["stock will decrease", "stock will increase", "stock will hold"]
-    print(f"prediction: {prediction}")
-    return labels[np.argmax(prediction)]
+        print(f"prediction: {prediction}")
+        labels = [
+            "stock will decrease",
+            "stock will increase",
+            "stock will hold",
+        ]
+        # print(labels[np.argmax(prediction)])
+        return labels[np.argmax(prediction)]
+    except ValueError:
+        counter += 1
+        print("ValueError occurred for {counter} entry")

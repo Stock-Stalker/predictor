@@ -2,19 +2,20 @@
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from utils.preprocessor import reddit_worldnews_fetcher
 import numpy as np
 import pickle
 
 max_features = 2000
 
 
-def predictor(text):
+def predictor(headlines):
     """
     Predict whether a stock will increase or decrease.
 
     Args
         symbol:String - ticker symbol for stock.
-        headline:String - the headline to predict on.
+        headlines:Arr - 25 top headlines based on company keywords
 
     Returns
         Classification label:Int

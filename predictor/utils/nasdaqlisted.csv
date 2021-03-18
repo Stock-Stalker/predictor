@@ -7,7 +7,6 @@ AAL,"American Airlines Group, Inc. - Common Stock",Q,N,N,100.0,N,N
 AAME,Atlantic American Corporation - Common Stock,G,N,N,100.0,N,N
 AAOI,"Applied Optoelectronics, Inc. - Common Stock",G,N,N,100.0,N,N
 AAON,"AAON, Inc. - Common Stock",Q,N,N,100.0,N,N
-AAPL,Apple Inc. - Common Stock,Q,N,N,100.0,N,N
 AAWW,Atlas Air Worldwide Holdings - Common Stock,Q,N,N,100.0,N,N
 AAXJ,iShares MSCI All Country Asia ex Japan Index Fund,G,N,N,100.0,Y,N
 ABCB,Ameris Bancorp - Common Stock,Q,N,N,100.0,N,N
@@ -210,7 +209,6 @@ AMCX,AMC Networks Inc. - Class A Common Stock,Q,N,N,100.0,N,N
 AMD,"Advanced Micro Devices, Inc. - Common Stock",Q,N,N,100.0,N,N
 AMED,Amedisys Inc - Common Stock,Q,N,N,100.0,N,N
 AMEH,"Apollo Medical Holdings, Inc. - Common Stock",S,N,N,100.0,N,N
-AMGN,Amgen Inc. - Common Stock,Q,N,N,100.0,N,N
 AMHC,Amplitude Healthcare Acquisition Corporation - Class A Common Stock,S,N,N,100.0,N,N
 AMHCU,Amplitude Healthcare Acquisition Corporation - Unit,S,N,N,100.0,N,N
 AMHCW,Amplitude Healthcare Acquisition Corporation - Warrant,S,N,N,100.0,N,N
@@ -911,7 +909,7 @@ COFS,"ChoiceOne Financial Services, Inc. - Common Stock",S,N,N,100.0,N,N
 COGT,"Cogent Biosciences, Inc. - Common Stock",Q,N,N,100.0,N,N
 COHR,"Coherent, Inc. - Common Stock",Q,N,N,100.0,N,N
 COHU,"Cohu, Inc. - Common Stock",Q,N,N,100.0,N,N
-COKE,"Coca-Cola Consolidated, Inc. - Common Stock",Q,N,N,100.0,N,N
+COKE,"-Cola Consolidated, Inc. - Common Stock",Q,N,N,100.0,N,N
 COLB,"Columbia Banking System, Inc. - Common Stock",Q,N,N,100.0,N,N
 COLIU,Colicity Inc. - Units,S,N,N,100.0,N,N
 COLL,"Collegium Pharmaceutical, Inc. - Common Stock",Q,N,N,100.0,N,N
@@ -984,7 +982,6 @@ CRWS,"Crown Crafts, Inc. - Common Stock",S,N,N,100.0,N,N
 CSA,VictoryShares US Small Cap Volatility Wtd ETF,G,N,N,100.0,Y,N
 CSB,VictoryShares US Small Cap High Div Volatility Wtd ETF,G,N,N,100.0,Y,N
 CSBR,"Champions Oncology, Inc. - Common Stock",S,N,N,100.0,N,N
-CSCO,"Cisco Systems, Inc. - Common Stock",Q,N,N,100.0,N,N
 CSCW,Color Star Technology Co. Ltd. - Ordinary Shares,S,N,D,100.0,N,N
 CSF,VictoryShares US Discovery Enhanced Volatility Wtd ETF,G,N,N,100.0,Y,N
 CSGP,"CoStar Group, Inc. - Common Stock",Q,N,N,100.0,N,N
@@ -2081,7 +2078,6 @@ INPX,Inpixon  - Common Stock,S,N,N,100.0,N,N
 INSE,"Inspired Entertainment, Inc. - Common Stock",S,N,N,100.0,N,N
 INSG,Inseego Corp. - Common Stock,Q,N,N,100.0,N,N
 INSM,"Insmed, Inc. - Common Stock",Q,N,N,100.0,N,N
-INTC,Intel Corporation - Common Stock,Q,N,N,100.0,N,N
 INTG,The Intergroup Corporation - Common Stock,S,N,N,100.0,N,N
 INTU,Intuit Inc. - Common Stock,Q,N,N,100.0,N,N
 INTZ,Intrusion Inc. - Common Stock,S,N,N,100.0,N,N
@@ -2616,7 +2612,6 @@ MRVL,Marvell Technology Group Ltd. - Common Stock,Q,N,N,100.0,N,N
 MSACU,Medicus Sciences Acquisition Corp. - Unit,S,N,N,100.0,N,N
 MSBI,"Midland States Bancorp, Inc. - Common Stock",Q,N,N,100.0,N,N
 MSEX,Middlesex Water Company - Common Stock,Q,N,N,100.0,N,N
-MSFT,Microsoft Corporation - Common Stock,Q,N,N,100.0,N,N
 MSGM,Motorsport Games Inc. - Class A Common Stock,S,N,N,100.0,N,N
 MSON,"MISONIX, Inc. - Common Stock",G,N,N,100.0,N,N
 MSTR,MicroStrategy Incorporated - Class A Common Stock,Q,N,N,100.0,N,N
@@ -4169,7 +4164,6 @@ WAFU,Wah Fu Education Group Limited - Ordinary Shares,S,N,N,100.0,N,N
 WASH,"Washington Trust Bancorp, Inc. - Common Stock",Q,N,N,100.0,N,N
 WATT,Energous Corporation - Common Stock,S,N,N,100.0,N,N
 WB,Weibo Corporation - American Depositary Shares,Q,N,N,100.0,N,N
-WBA,"Walgreens Boots Alliance, Inc. - Common Stock",Q,N,N,100.0,N,N
 WBND,Western Asset Total Return ETF,G,N,N,100.0,Y,N
 WCBR,WisdomTree Cybersecurity Fund,G,N,N,100.0,Y,N
 WCLD,WisdomTree Cloud Computing Fund,G,N,N,100.0,Y,N

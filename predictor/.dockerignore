@@ -1,0 +1,8 @@
+Dockerfile*
+pyproject.toml
+StockStalker.ipynb
+__pycache__
+docs/
+env/
+*.csv
+get_data.py

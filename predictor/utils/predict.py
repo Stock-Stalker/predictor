@@ -2,7 +2,6 @@
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from utils.preprocessor import reddit_worldnews_fetcher
 import numpy as np
 import pickle
 

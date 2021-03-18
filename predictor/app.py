@@ -21,6 +21,8 @@ def home(symbol):
     """
     headlines = reddit_worldnews_fetcher.topnews_today(symbol)
     print(f"Headlines from app: {headlines}")
+    if len(headlines) < 1:
+        return jsonify({"prediction": 2})
     predictions = []
     for headline in headlines:
         pred = predictor(symbol, headline)

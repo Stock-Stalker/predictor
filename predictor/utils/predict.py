@@ -36,11 +36,7 @@ def predictor(symbol, headline):
         padded = pad_sequences(seq)
         prediction = model.predict(padded)
         print(f"prediction: {prediction}")
-        labels = [
-            "stock will decrease",
-            "stock will increase",
-            "stock will hold",
-        ]
+        labels = [0, 1, 2]
         # print(labels[np.argmax(prediction)])
         return labels[np.argmax(prediction)]
     except ValueError:

@@ -20,12 +20,17 @@ def home(symbol):
             "stock will hold"
     """
     headlines = reddit_worldnews_fetcher.topnews_today(symbol)
-    print(f"Headlines from app: {headlines}")
+    # If there are no headlines for the day, return a neutral prediction
+    if len(headlines) < 1:
+        print(f"LINE 24 - HEADLINES EMPTY")
+        predictions = 2
+        return jsonify({"predictions": predictions})
+
+    # Otherwise, append each prediction to our predictions array and return
     predictions = []
     for headline in headlines:
         pred = predictor(symbol, headline)
         predictions.append(pred)
-    print(f"Predictions list: {predictions}")
     return jsonify({"predictions": predictions}), 200
 
 

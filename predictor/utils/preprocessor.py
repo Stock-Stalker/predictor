@@ -70,8 +70,7 @@ class reddit_worldnews_fetcher:
         Fetch the top 25 news headlines of a given date.
 
         Input: Time span start_date and end_date
-                Type:String, YYYY-mm-dd format
-                Will convert to epoch with helper
+                Type:epochtime
         Output: A list of the givendata and top25news
                 [data,new1,new2,...]
         """
@@ -79,11 +78,11 @@ class reddit_worldnews_fetcher:
             "https://api.pushshift.io/reddit/search/submission"
             "?subreddit=worldnews"
             "&sort_type=score"
-            f"&after={to_epoch(start_date)}"
-            f"&before={to_epoch(end_date)}"
+            f"&after={start_date}"
+            f"&before={end_date}"
             "&sort=desc"
-            "&size=300"
-            "&fields=title,created_utc"
+            "&size=25"
+            "&fields=title"
             f"&title={company_name}"
         )
         page = requests.get(url)
@@ -91,12 +90,14 @@ class reddit_worldnews_fetcher:
             return None
         try:
             content = page.json().get("data")
+            # sym = get_ticker_from_name(company_name).symbol
+            # print(f"IN TRY BLOCK: GETTING SYMBOL: {sym}")
             news_entry = []
             for news in content:
-                news_entry.append((news["title"], news["created_utc"]))
+                news_entry.append(news["title"])
             return news_entry
         except:
-            return None
+            print("in except block redditworldnewsfetcher")
 
     @staticmethod
     def historical_data(period1, period2=str(dt.date.today())):
@@ -122,7 +123,7 @@ class reddit_worldnews_fetcher:
                 current_time = next_day
 
     @staticmethod
-    def topnews_today():
+    def topnews_today(company_name):
         """
         Return the top news of today.
 
@@ -133,9 +134,9 @@ class reddit_worldnews_fetcher:
         today_epoch = get_today_epoch()
         nextday_epoch = today_epoch + (60 * 60 * 24)
         top_news = reddit_worldnews_fetcher.top25news(
-            today_epoch, nextday_epoch
+            today_epoch, nextday_epoch, company_name
         )
-        return " ".join(top_news[1:])
+        return top_news
 
 
 # -------------------------------#
@@ -243,7 +244,7 @@ class djia_fetcher:
 #    news_sentiment_analysis     #
 # -------------------------------#
 
-# Use for testing model "in production" prior to fully finishing app
+# Use for testing model "in production" prior to fully finishing app?
 # No reason we should waste this :)
 
 
@@ -286,31 +287,3 @@ def news_sentiment_analysis(keyword):
         except TypeError:
             return f"Missing one entry. Failed on {keyword}"
     return news
-
-
-# print(
-#     f"PRINTING REDDIT_WORLDNEWS_FETCHER RESULTS: \n {reddit_worldnews_fetcher.top25news('2020-01-01', '2021-03-01', 'Apple')} \n"
-# )
-# print(
-#     "_________________________________________________________________________________"
-# )
-# test_result = reddit_worldnews_fetcher.top25news(
-#     "2021-01-01", "2021-01-02", "Apple"
-# )[
-#     0
-# ]  # access just the first returned item
-# news_date = test_result[1]  # access the date from tuple
-#
-# print(
-#     f"GET ONE DATA FROM REDDIT_WORLDNEWS_FETCHER: {test_result}, {news_date}"
-# )
-#
-# print(
-#     f"PRINTING DJIA_FETCHER RESULTS: \n {djia_fetcher.get_djia_label(news_date, 'Apple')} \n"
-# )
-# print(
-#     "_________________________________________________________________________________"
-# )
-# print(
-#     f"PRINTING Sentiment_Analysis RESULTS: \n {news_sentiment_analysis('apple')} \n"
-# )

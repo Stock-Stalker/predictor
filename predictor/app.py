@@ -24,14 +24,14 @@ def home(symbol):
     if len(headlines) < 1:
         print(f"LINE 24 - HEADLINES EMPTY")
         predictions = 2
-        return jsonify({"predictions": predictions})
+        return jsonify({predictions})
 
     # Otherwise, append each prediction to our predictions array and return
     predictions = []
     for headline in headlines:
         pred = predictor(symbol, headline)
         predictions.append(pred)
-    return jsonify({"predictions": predictions}), 200
+    return jsonify({predictions}), 200
 
 
 if __name__ == "__main__":

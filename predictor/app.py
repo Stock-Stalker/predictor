@@ -1,5 +1,5 @@
 """Predictor."""
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from utils.predict import predictor
 from utils.preprocessor import reddit_worldnews_fetcher
 

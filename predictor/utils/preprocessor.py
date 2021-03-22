@@ -123,7 +123,7 @@ class reddit_worldnews_fetcher:
                 current_time = next_day
 
     @staticmethod
-    def topnews_today(company_name):
+    def topnews_today(symbol):
         """
         Return the top news of today.
 
@@ -131,6 +131,8 @@ class reddit_worldnews_fetcher:
         Output: String of 25 top news headlines separated by spaces
                 'news1 news2 news3 ...'
         """
+        company_name = get_ticker_from_name(symbol).get("name").lower()
+        print(f"company_name: ${company_name}")
         today_epoch = get_today_epoch()
         nextday_epoch = today_epoch + (60 * 60 * 24)
         top_news = reddit_worldnews_fetcher.top25news(

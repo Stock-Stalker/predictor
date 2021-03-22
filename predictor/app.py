@@ -20,21 +20,22 @@ def home():
             "stock will hold"
     """
     arguments = request.args["symbol"]
-    # print(f"\nSYMBOL: {symbol}\n")
-    # Otherwise, append each prediction to our predictions array and return
     headlines = []
-    predictions = []
+    predictions = {}
+    print("FLASK PREDICTIONS 1 ", predictions)
     for symbol in request.args:
-        headlines = reddit_worldnews_fetcher.topnews_today(symbol)
+        headlines = " ".join(
+            reddit_worldnews_fetcher.topnews_today(symbol).lower()
+        )
         # If there are no headlines for the day, return a neutral prediction
         if len(headlines) < 1:
-            print(f"LINE 24 - HEADLINES EMPTY")
-            predictions = 2
+            print("LINE 24 - HEADLINES EMPTY")
+            predictions[symbol] = 2
         else:
-            for headline in headlines:
-                pred = predictor(symbol, headline)
-                predictions.append((pred, symbol))
-    return jsonify({"data": predictions}), 200
+            pred = predictor(symbol, headlines)
+            predictions[symbol] = pred
+    print("FLASK PREDICTIONS 2 ", predictions)
+    return jsonify(predictions), 200
 
 
 if __name__ == "__main__":

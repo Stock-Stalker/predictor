@@ -20,7 +20,7 @@ def home(symbol):
             "stock will hold"
     """
     arguments = request.args.to_dict(flat=False)
-    print(f"query params: {arguments}")
+    print(f"QUERY PARAMS: {arguments}")
     headlines = reddit_worldnews_fetcher.topnews_today(symbol)
     # If there are no headlines for the day, return a neutral prediction
     if len(headlines) < 1:

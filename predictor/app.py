@@ -20,17 +20,21 @@ def home():
             "stock will hold"
     """
     arguments = request.args["symbol"]
+    print("PRINTING REQUEST.ARGS[symbol]", request.args["symbol"])
     headlines = []
     predictions = {}
     print("FLASK PREDICTIONS 1 ", predictions)
-    for symbol in request.args:
+    print("PRINTING ARGUMENTS:", arguments)
+    for symbol in arguments:
+        print(f"PRINTING SYMBOL: {symbol}")
         headlines = " ".join(
-            reddit_worldnews_fetcher.topnews_today(symbol).lower()
-        )
+            reddit_worldnews_fetcher.topnews_today(symbol)
+        ).lower()
         # If there are no headlines for the day, return a neutral prediction
         if len(headlines) < 1:
-            print("LINE 24 - HEADLINES EMPTY")
-            predictions[symbol] = 2
+            print(f"LINE 24 - HEADLINES EMPTY")
+            pred = 2
+            predictions[symbol] = pred
         else:
             pred = predictor(symbol, headlines)
             predictions[symbol] = pred

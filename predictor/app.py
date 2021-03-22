@@ -31,7 +31,7 @@ def home():
         if len(headlines) < 1:
             print(f"LINE 24 - HEADLINES EMPTY")
             pred = 2
-            predictions.append((pred, symbol))
+            predictions[symbol] = pred
         else:
             pred = predictor(symbol, headlines)
             predictions[symbol] = pred

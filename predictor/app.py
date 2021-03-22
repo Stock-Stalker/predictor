@@ -29,7 +29,8 @@ def home():
         # If there are no headlines for the day, return a neutral prediction
         if len(headlines) < 1:
             print(f"LINE 24 - HEADLINES EMPTY")
-            predictions = 2
+            pred = 2
+            predictions.append((pred, symbol))
         else:
             for headline in headlines:
                 pred = predictor(symbol, headline)

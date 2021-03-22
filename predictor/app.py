@@ -6,8 +6,8 @@ from utils.preprocessor import reddit_worldnews_fetcher
 app = Flask(__name__)
 
 
-@app.route("/predictor")
-def home():
+@app.route("/predictor/<symbol>")
+def home(symbol):
     """
     Return prediction for given stock symbol based on day's news.
 
@@ -19,26 +19,25 @@ def home():
             "stock will go down"
             "stock will hold"
     """
-    arguments = request.args["symbol"]
-    print("PRINTING REQUEST.ARGS[symbol]", request.args["symbol"])
+    # Create list of symbols
+    symbols = symbol.split(",")
+    # Initialize headlines array and predictions object
     headlines = []
     predictions = {}
-    print("FLASK PREDICTIONS 1 ", predictions)
-    print("PRINTING ARGUMENTS:", arguments)
-    for symbol in arguments:
-        print(f"PRINTING SYMBOL: {symbol}")
+    # For each symbol, we want to check for daily headlines and return a prediction
+    for s in symbols:
+        # Give our predictor a "bag of words"
         headlines = " ".join(
-            reddit_worldnews_fetcher.topnews_today(symbol)
+            reddit_worldnews_fetcher.topnews_today(s)
         ).lower()
         # If there are no headlines for the day, return a neutral prediction
         if len(headlines) < 1:
-            print(f"LINE 24 - HEADLINES EMPTY")
             pred = 2
-            predictions[symbol] = pred
+            predictions[s] = pred
         else:
-            pred = predictor(symbol, headlines)
-            predictions[symbol] = pred
-    print("FLASK PREDICTIONS 2 ", predictions)
+            # Return the predictor's prediction
+            pred = predictor(s, headlines)
+            predictions[s] = pred
     return jsonify(predictions), 200
 
 

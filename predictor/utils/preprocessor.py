@@ -289,3 +289,36 @@ def news_sentiment_analysis(keyword):
         except TypeError:
             return f"Missing one entry. Failed on {keyword}"
     return news
+
+
+# -------------------------------#
+#        fetch_top_tweets        #
+# -------------------------------#
+
+
+def fetch_top_tweets(symbol):
+    """
+    Return top25 tweets of the day that mention the symbol.
+
+    Input: keyword for the stock - company name - type:str
+    Output: String of 25 top tweets separated by spaces
+            'tweet1 tweet2 tweet3 ...'
+    """
+    bearer_token = os.environ.get("TWITTER_BEARER_TOKEN")
+
+    url = (
+        "https://api.twitter.com/2/tweets/search/recent?"
+        f"query={symbol} lang:en&"
+        f"start_time={dt.datetime.today().strftime('%Y-%m-%d')}T00:00:00.000Z&"
+        "max_results=25"
+    )
+    headers = {"Authorization": f"Bearer {bearer_token}"}
+    response = requests.request("GET", url, headers=headers).json()
+    tweets = []
+    for entry in response["data"]:
+        tweets.append(entry["text"].replace("\n", ""))
+
+    return " ".join(tweets)
+
+
+print(fetch_top_tweets("apple"))

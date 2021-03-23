@@ -1,7 +1,7 @@
 """Predictor."""
 from flask import Flask, jsonify, request
 from utils.predict import predictor
-from utils.preprocessor import reddit_worldnews_fetcher
+from utils.preprocessor import reddit_worldnews_fetcher, fetch_top_tweets
 
 app = Flask(__name__)
 
@@ -30,8 +30,11 @@ def home(symbol):
         headlines = " ".join(
             reddit_worldnews_fetcher.topnews_today(s)
         ).lower()
+        headlines = headlines + fetch_top_tweets(s)
+        print("PRINTING HEADLINES", headlines)
         # If there are no headlines for the day, return a neutral prediction
-        if len(headlines) < 1:
+        if not headlines:
+            print("IN IF NOT HEADLINES BLOCK")
             pred = 2
             predictions[s] = pred
         else:

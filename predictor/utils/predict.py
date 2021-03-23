@@ -41,4 +41,4 @@ def predictor(symbol, headline):
         return labels[np.argmax(prediction)]
     except ValueError:
         counter += 1
-        print("ValueError occurred for {counter} entry")
+        print(f"ValueError occurred for {counter} entry")

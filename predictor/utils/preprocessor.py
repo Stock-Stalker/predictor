@@ -243,49 +243,32 @@ class djia_fetcher:
 
 
 # -------------------------------#
-#    news_sentiment_analysis     #
+#        fetch_top_tweets        #
 # -------------------------------#
 
-# Use for testing model "in production" prior to fully finishing app?
-# No reason we should waste this :)
 
-
-def news_sentiment_analysis(keyword):
+def fetch_top_tweets(symbol):
     """
-    Return top25 news and Sentiment Analysis label.
+    Return top25 tweets of the day that mention the symbol.
 
     Input: keyword for the stock - company name - type:str
-    Output: A list of list containing
-            ['news title', 'description', 'Sentiment Analysis label']
-            Sentiment Analysis label:
-                0 = "negative"
-                1 = "positive"
-                2 = "neutral"
+    Output: String of 25 top tweets separated by spaces
+            'tweet1 tweet2 tweet3 ...'
     """
-    # Make API call to fetch top news headline
+    bearer_token = os.environ.get("TWITTER_BEARER_TOKEN")
 
-    url = f"https://newsapi.org/v2/top-headlines?q={keyword}&pageSize=25&language=en&apiKey={os.getenv('API_KEY')}"
-    content = requests.get(url).json()
-    articles = content.get("articles", None)
-    news = []
-    for (
-        article
-    ) in articles:  # parsing data and store the news title and description
-        news.append([article.get("title"), article.get("description")])
-    # Make API call to get sentiment label
-    for entry in news:
-        try:
-            body = {"text": " ".join(entry)}
-            x = requests.post(
-                "https://sentim-api.herokuapp.com/api/v1/",
-                json=body,
-                headers={"Content-Type": "application/json"},
-            )
-            result = x.json()["result"][
-                "type"
-            ]  # parsing data and store the result
-            label_dict = {"positive": 1, "negative": 0, "neutral": 2}
-            entry.append(label_dict[result])
-        except TypeError:
-            return f"Missing one entry. Failed on {keyword}"
-    return news
+    url = (
+        "https://api.twitter.com/2/tweets/search/recent?"
+        f"query={symbol} lang:en&"
+        f"start_time={dt.datetime.today().strftime('%Y-%m-%d')}T00:00:00.000Z&"
+        "max_results=25"
+    )
+    headers = {"Authorization": f"Bearer {bearer_token}"}
+    response = requests.request("GET", url, headers=headers).json()
+    tweets = []
+
+    print(f"RESPONSE.DATA: {response}")
+    for entry in response["data"]:
+        tweets.append(entry["text"].replace("\n", ""))
+
+    return " ".join(tweets).replace("[^A-Za-z0-9]+", "").lower()

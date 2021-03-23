@@ -29,10 +29,12 @@ def home(symbol):
         # Give our predictor a "bag of words"
         headlines = " ".join(
             reddit_worldnews_fetcher.topnews_today(s)
-        ).lower() + fetch_top_tweets(s)
+        ).lower()
+        headlines = headlines + fetch_top_tweets(s)
         print("PRINTING HEADLINES", headlines)
         # If there are no headlines for the day, return a neutral prediction
-        if len(headlines) < 1:
+        if not headlines:
+            print("IN IF NOT HEADLINES BLOCK")
             pred = 2
             predictions[s] = pred
         else:

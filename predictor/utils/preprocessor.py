@@ -266,10 +266,12 @@ def fetch_top_tweets(symbol):
     headers = {"Authorization": f"Bearer {bearer_token}"}
     response = requests.request("GET", url, headers=headers).json()
     tweets = []
+
+    print(f"RESPONSE.DATA: {response}")
     for entry in response["data"]:
         tweets.append(entry["text"].replace("\n", ""))
 
-    return " ".join(tweets)
+    return " ".join(tweets).replace("[^A-Za-z0-9]+", "").lower()
 
 
 print(fetch_top_tweets("apple"))

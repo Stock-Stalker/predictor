@@ -243,55 +243,6 @@ class djia_fetcher:
 
 
 # -------------------------------#
-#    news_sentiment_analysis     #
-# -------------------------------#
-
-# Use for testing model "in production" prior to fully finishing app?
-# No reason we should waste this :)
-
-
-def news_sentiment_analysis(keyword):
-    """
-    Return top25 news and Sentiment Analysis label.
-
-    Input: keyword for the stock - company name - type:str
-    Output: A list of list containing
-            ['news title', 'description', 'Sentiment Analysis label']
-            Sentiment Analysis label:
-                0 = "negative"
-                1 = "positive"
-                2 = "neutral"
-    """
-    # Make API call to fetch top news headline
-
-    url = f"https://newsapi.org/v2/top-headlines?q={keyword}&pageSize=25&language=en&apiKey={os.getenv('API_KEY')}"
-    content = requests.get(url).json()
-    articles = content.get("articles", None)
-    news = []
-    for (
-        article
-    ) in articles:  # parsing data and store the news title and description
-        news.append([article.get("title"), article.get("description")])
-    # Make API call to get sentiment label
-    for entry in news:
-        try:
-            body = {"text": " ".join(entry)}
-            x = requests.post(
-                "https://sentim-api.herokuapp.com/api/v1/",
-                json=body,
-                headers={"Content-Type": "application/json"},
-            )
-            result = x.json()["result"][
-                "type"
-            ]  # parsing data and store the result
-            label_dict = {"positive": 1, "negative": 0, "neutral": 2}
-            entry.append(label_dict[result])
-        except TypeError:
-            return f"Missing one entry. Failed on {keyword}"
-    return news
-
-
-# -------------------------------#
 #        fetch_top_tweets        #
 # -------------------------------#
 

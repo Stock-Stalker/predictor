@@ -274,4 +274,4 @@ def fetch_top_tweets(symbol):
     return " ".join(tweets).replace("[^A-Za-z0-9]+", "").lower()
 
 
-print(fetch_top_tweets("apple"))
+print(fetch_top_tweets("aapl"))

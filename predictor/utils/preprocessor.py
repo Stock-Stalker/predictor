@@ -267,8 +267,10 @@ def fetch_top_tweets(symbol):
     response = requests.request("GET", url, headers=headers).json()
     tweets = []
 
-    print(f"RESPONSE.DATA: {response}")
-    for entry in response["data"]:
-        tweets.append(entry["text"].replace("\n", ""))
+    try:
+        for entry in response.get("data"):
+            tweets.append(entry["text"].replace("\n", ""))
 
-    return " ".join(tweets).replace("[^A-Za-z0-9]+", "").lower()
+        return " ".join(tweets).replace("[^A-Za-z0-9]+", "").lower()
+    except KeyError:
+        print("Something went wrong")

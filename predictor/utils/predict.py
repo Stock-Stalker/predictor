@@ -5,8 +5,6 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import numpy as np
 import pickle
 
-max_features = 2000
-
 
 def predictor(symbol, headline):
     """

@@ -1,5 +1,4 @@
 """Read in our saved model, and call predict to return a prediction."""
-import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import numpy as np
@@ -22,7 +21,9 @@ def predictor(symbol, headline):
     """
     model = keras.models.load_model("saved_model/my_model")
 
-    # Preprocess our symbol and headlines so the model can accept the tokenization properly
+    counter = 0
+    # Preprocess our symbol and headlines so the model
+    # can accept the tokenization properly
     try:
         headline = [f"{symbol} {headline}"]
 

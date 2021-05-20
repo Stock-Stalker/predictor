@@ -1,7 +1,6 @@
+"""Get environment variables."""
 import os
 import dotenv
-import requests
-import base64
 
 dotenv.load_dotenv()
 

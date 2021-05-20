@@ -96,7 +96,7 @@ class reddit_worldnews_fetcher:
             for news in content:
                 news_entry.append(news["title"])
             return news_entry
-        except:
+        except (ValueError, KeyError, IndexError, NameError, TypeError):
             print("in except block redditworldnewsfetcher")
 
     @staticmethod
@@ -156,12 +156,12 @@ class djia_fetcher:
         Output: A tuple of headings and the body of the table
         and will scrape Dow Jones historical data from yahoo news.
         """
-
         url = (
             f"https://finance.yahoo.com/quote/{ticker}/history"
             f"?period1={period1}"
             f"&period2={period2}"
-            "&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
+            "&interval=1d&filter=history"
+            "&frequency=1d&includeAdjustedClose=true"
         )
         page = requests.get(url)
         # Parsing & Organizing Data

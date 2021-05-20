@@ -1,8 +1,10 @@
 Dockerfile*
+.dockerignore
 docker-compose*
 __pycache__
 *.ipynb
 *.csv
 *.md
 .git*
+Makefile
 get_data.py

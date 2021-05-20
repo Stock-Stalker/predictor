@@ -43,10 +43,9 @@ jobs:
           TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
 
       - name: Security Test with Snyk
-        run: |
-          npm install -g snyk
-          snyk config set api=${{ secrets.SNYK_AUTH_TOKEN }}
-          snyk test
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_AUTH_TOKEN }}
 
       - name: Notify slack success
         if: success()

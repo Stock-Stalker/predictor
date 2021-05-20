@@ -5,4 +5,3 @@ __pycache__
 *.csv
 *.md
 get_data.py
-saved_model/

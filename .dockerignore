@@ -1,8 +1,7 @@
 Dockerfile*
-pyproject.toml
-StockStalker.ipynb
+docker-compose*
 __pycache__
-docs/
-env/
+*.ipynb
 *.csv
 get_data.py
+saved_model/

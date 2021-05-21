@@ -43,6 +43,14 @@ jobs:
           API_KEY: ${{ secrets.API_KEY }}
           TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
 
+      - name: Docker Image Security Test with Snyk
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_AUTH_TOKEN }}
+        with:
+          image: python:3.9
+          args: --fail-on=upgradable
+
       - name: Security Test with Snyk
         uses: snyk/actions/python-3.8@master
         env:

@@ -28,7 +28,7 @@ def home(symbol):
     # we want to check for daily headlines and return a prediction
     for s in symbols:
         # Give our predictor a "bag of words"
-        headlines = " ".join(reddit_worldnews_fetcher.topnews_today(s)).lower()
+        headlines = " ".join(topnews_today(s)).lower()
         headlines = headlines + fetch_top_tweets(s)
         print("PRINTING HEADLINES", headlines)
         # If there are no headlines for the day, return a neutral prediction

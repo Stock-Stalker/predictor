@@ -27,14 +27,14 @@ def predictor(symbol, headline):
     try:
         headline = [f"{symbol} {headline}"]
 
-        print(f"Headlines after preprocessing: {headline}")
+        # print(f"Headlines after preprocessing: {headline}")
         # Tokenize our text to sequences the model understands
         with open("utils/tokenizer.pickle", "rb") as handle:
             tokenizer = pickle.load(handle)
         seq = tokenizer.texts_to_sequences(headline)
         padded = pad_sequences(seq)
         prediction = model.predict(padded)
-        print(f"prediction: {prediction}")
+        # print(f"prediction: {prediction}")
         labels = [0, 1, 2]
         # print(labels[np.argmax(prediction)])
         return labels[np.argmax(prediction)]

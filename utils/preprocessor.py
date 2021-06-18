@@ -18,7 +18,7 @@ def topnews_today(symbol):
             'news1 news2 news3 ...'
     """
     company_name = get_ticker_from_name(symbol).get("name").lower()
-    print(f"company_name: ${company_name}")
+    # print(f"company_name: ${company_name}")
     today_epoch = get_today_epoch()
     nextday_epoch = today_epoch + (60 * 60 * 24)
     top_news = reddit_worldnews_fetcher.top25news(

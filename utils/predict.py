@@ -29,7 +29,7 @@ def predictor(symbol, headline):
 
         print(f"Headlines after preprocessing: {headline}")
         # Tokenize our text to sequences the model understands
-        with open("tokenizer.pickle", "rb") as handle:
+        with open("utils/tokenizer.pickle", "rb") as handle:
             tokenizer = pickle.load(handle)
         seq = tokenizer.texts_to_sequences(headline)
         padded = pad_sequences(seq)

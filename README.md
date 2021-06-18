@@ -35,7 +35,7 @@
 - [Required Software](#required-software)
 - [How to Run](#how-to-run)
 - [API Documentation](#api-documentation)
-- [Usage and examples](#usage-and-examples)
+- [Usage and Examples](#usage-and-examples)
 - [Running Tests](#running-tests)
 
 
@@ -157,7 +157,8 @@ Types:
 
 In the event that there is no news on a given day for the company you provide (for example, if today no one has published any articles containing keywords about "Apple" or "AAPL"), the predictor will always return `2`. This corresponds to a neutral prediction. The reasoning for this is that if we do not have data on a given day, we are unable to make a confident prediction as to the behavior of the stock.
 
-### Example
+
+## Usage and Examples
 
 ```http
 GET https://stockstalker.tk/predictor/AAPL

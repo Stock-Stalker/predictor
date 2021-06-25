@@ -1,7 +1,7 @@
 """Predictor routes."""
 from flask import jsonify
 from utils.predict import predictor
-from utils.preprocessor import topnews_today, fetch_top_tweets
+from utils.preprocessor import get_top_news_today, get_top_tweets
 from . import app
 
 @app.route("/predictor/<symbol>")
@@ -26,8 +26,8 @@ def prediction(symbol):
     # we want to check for daily headlines and return a prediction
     for s in symbols:
         # Give our predictor a "bag of words"
-        headlines = " ".join(topnews_today(s)).lower()
-        headlines = headlines + fetch_top_tweets(s)
+        headlines = " ".join(get_top_news_today(s)).lower()
+        headlines = headlines + get_top_tweets(s)
         # print("PRINTING HEADLINES", headlines)
         # If there are no headlines for the day, return a neutral prediction
         if not headlines:

@@ -4,9 +4,8 @@ from utils.predict import predictor
 from utils.preprocessor import topnews_today, fetch_top_tweets
 from . import app
 
-
 @app.route("/predictor/<symbol>")
-def home(symbol):
+def prediction(symbol):
     """
     Return prediction for given stock symbol based on day's news.
 
@@ -29,10 +28,10 @@ def home(symbol):
         # Give our predictor a "bag of words"
         headlines = " ".join(topnews_today(s)).lower()
         headlines = headlines + fetch_top_tweets(s)
-        print("PRINTING HEADLINES", headlines)
+        # print("PRINTING HEADLINES", headlines)
         # If there are no headlines for the day, return a neutral prediction
         if not headlines:
-            print("IN IF NOT HEADLINES BLOCK")
+            # print("IN IF NOT HEADLINES BLOCK")
             pred = 2
             predictions[s] = pred
         else:

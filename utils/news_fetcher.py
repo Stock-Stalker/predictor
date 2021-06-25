@@ -2,7 +2,7 @@
 import requests
 
 
-def top25news(start_date, end_date, company_name):
+def get_top25_news(start_date, end_date, company_name):
     """
     Fetch the top n news headlines of a given date.
     Input: Start_date, end_date -> this denotes the time frame within

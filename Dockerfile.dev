@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.9-buster
 
 LABEL decription="Development image for StockStalker predictor."
 
@@ -7,7 +7,8 @@ WORKDIR /usr/src/app
 HEALTHCHECK --interval=5m --timeout=30s --retries=2 \
     CMD curl -f http://localhost:8080/predictor/AAPL || exit 1
 
-COPY requirements.txt .
+COPY  requirements.txt .
+COPY  requirements_dev.txt .
 
 RUN pip install --no-cache-dir -r requirements_dev.txt
 
@@ -18,4 +19,4 @@ ENV FLASK_ENV=development
 
 EXPOSE 5000
 
-CMD ["flask", "run"]
+CMD ["flask", "run", "--host=0.0.0.0"]

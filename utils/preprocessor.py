@@ -1,7 +1,7 @@
 """Preprocessing for daily news scraping, obtaining data for model training."""
 import os
 import requests
-from news_fetchers import top25news
+from .news_fetcher import top25news
 import datetime as dt
 from fuzzywuzzy import process
 
@@ -69,8 +69,7 @@ def fetch_top_tweets(symbol):
     Output: String of 25 top tweets separated by spaces
             'tweet1 tweet2 tweet3 ...'
     """
-    bearer_token = os.environ.get("TWITTER_BEARER_TOKEN")
-
+    bearer_token = os.environ.get("TWITTER_SECRET_KEY")
     url = (
         "https://api.twitter.com/2/tweets/search/recent?"
         f"query={symbol} lang:en&"

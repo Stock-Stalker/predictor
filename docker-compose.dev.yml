@@ -2,6 +2,7 @@ version: "3.9"
 services:
   predictor:
     restart: always
+    image: predictor
     build:
       context: .
       dockerfile: Dockerfile.dev

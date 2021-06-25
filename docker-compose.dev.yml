@@ -8,7 +8,10 @@ services:
       dockerfile: Dockerfile.dev
     container_name: predictor
     volumes:
-      - .:/app
+      - ./predictor:/usr/src/app/predictor
+      - ./saved_model:/usr/src/app/saved_model
+      - ./utils:/usr/src/app/utils
+      - ./app.py:/usr/src/app/app.py
     env_file:
       - .env
     ports:

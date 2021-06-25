@@ -1,7 +1,7 @@
 """Predictor."""
 from flask import Flask, jsonify
 from utils.predict import predictor
-from utils.preprocessor import reddit_worldnews_fetcher, fetch_top_tweets
+from utils.preprocessor import fetch_top_tweets, topnews_today
 
 app = Flask(__name__)
 

@@ -1,7 +1,38 @@
 """Preprocessing for daily news scraping, obtaining data for model training."""
-
 import os
 import requests
+from news_fetchers import top25news
+import datetime as dt
+from fuzzywuzzy import process
+
+# -------------------------------#
+#    get_today_epoch             #
+# -------------------------------#
+
+
+def get_today_epoch():
+    """Return epoch time of today's date."""
+    today = dt.datetime.combine(dt.date.today(), dt.datetime.min.time())
+    epoch_today_gmt = int(today.timestamp())
+    return epoch_today_gmt
+
+
+# -------------------------------#
+#    get_ticker_from_name        #
+# -------------------------------#
+
+
+def get_ticker_from_name(abbr_or_name):
+    """
+    Return market ticker abbreviation for given company name.
+    Input: company name OR abbreviation:string
+    Output: dict including symbol, name, and date accessed
+    """
+    r = requests.get("https://api.iextrading.com/1.0/ref-data/symbols")
+    stockList = r.json()
+    # Then, if we want the symbol, we can access "symbol" key.
+    # If we want name, we extract "name" key.
+    return process.extractOne(abbr_or_name, stockList)[0]
 
 
 # -------------------------------#
@@ -21,9 +52,7 @@ def topnews_today(symbol):
     print(f"company_name: ${company_name}")
     today_epoch = get_today_epoch()
     nextday_epoch = today_epoch + (60 * 60 * 24)
-    top_news = reddit_worldnews_fetcher.top25news(
-        today_epoch, nextday_epoch, company_name
-    )
+    top_news = top25news(today_epoch, nextday_epoch, company_name)
     return top_news
 
 

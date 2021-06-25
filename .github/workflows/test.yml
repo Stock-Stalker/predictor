@@ -26,6 +26,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install flake8
+          pip install coverage
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Lint with flake8
@@ -42,14 +43,6 @@ jobs:
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_SECRET_KEY: ${{ secrets.TWITTER_SECRET_KEY }}
-
-      - name: Docker Image Security Test with Snyk
-        uses: snyk/actions/docker@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_AUTH_TOKEN }}
-        with:
-          image: python:3.9-slim-buster
-          args: --fail-on=upgradable
 
       - name: Security Test with Snyk
         uses: snyk/actions/python-3.8@master

@@ -1,9 +1,8 @@
-"""Predictor."""
-from flask import Flask, jsonify
+"""Predictor routes."""
+from flask import jsonify
 from utils.predict import predictor
-from utils.preprocessor import fetch_top_tweets, topnews_today
-
-app = Flask(__name__)
+from utils.preprocessor import reddit_worldnews_fetcher, fetch_top_tweets
+from . import app
 
 
 @app.route("/predictor/<symbol>")
@@ -41,7 +40,3 @@ def home(symbol):
             pred = predictor(s, headlines)
             predictions[s] = pred
     return jsonify(predictions), 200
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0")

@@ -1,3 +1,4 @@
+"""WSGI Production Server for Predictor app."""
 from waitress import serve
 from predictor import app
 

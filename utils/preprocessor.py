@@ -1,12 +1,12 @@
 """Preprocessing for daily news scraping, obtaining data for model training."""
 import os
 import requests
-from .news_fetcher import top25news
+from .news_fetcher import get_top25_news
 import datetime as dt
 from fuzzywuzzy import process
 
 # -------------------------------#
-#    get_today_epoch             #
+#        get_today_epoch         #
 # -------------------------------#
 
 
@@ -40,7 +40,7 @@ def get_ticker_from_name(abbr_or_name):
 # -------------------------------#
 
 
-def topnews_today(symbol):
+def get_top_news_today(symbol):
     """
     Return the top news of today.
 
@@ -52,16 +52,16 @@ def topnews_today(symbol):
     # print(f"company_name: ${company_name}")
     today_epoch = get_today_epoch()
     nextday_epoch = today_epoch + (60 * 60 * 24)
-    top_news = top25news(today_epoch, nextday_epoch, company_name)
+    top_news = get_top25_news(today_epoch, nextday_epoch, company_name)
     return top_news
 
 
 # -------------------------------#
-#        fetch_top_tweets        #
+#        get_top_tweets          #
 # -------------------------------#
 
 
-def fetch_top_tweets(symbol):
+def get_top_tweets(symbol):
     """
     Return top25 tweets of the day that mention the symbol.
 

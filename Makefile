@@ -38,7 +38,7 @@ reload-test: stop-test test
 hard-reload-test: stop-test rmi test
 
 lint:
-				flake8 .
+				flake8 . --extend-exclude env
 
 rm :
 				docker container prune -f

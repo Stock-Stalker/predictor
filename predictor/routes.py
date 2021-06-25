@@ -1,7 +1,7 @@
 """Predictor routes."""
 from flask import jsonify
 from utils.predict import predictor
-from utils.preprocessor import reddit_worldnews_fetcher, fetch_top_tweets
+from utils.preprocessor import topnews_today, fetch_top_tweets
 from . import app
 
 
